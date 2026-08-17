@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Word of Mouth Streaming
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.1-black?logo=next.js)](https://nextjs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Project-3ECF8E?logo=supabase)](https://supabase.com/)
+[![Mux](https://img.shields.io/badge/Mux-Video-FF2D55?logo=mux)](https://www.mux.com/)
 
-First, run the development server:
+Word of Mouth Streaming is a creator-first streaming platform prototype for independent artists, local culture, and premium streaming experiences. The app combines a cinematic homepage, dynamic show pages, artist portal entry points, and Mux-powered video playback with Supabase-backed content lookups.
+
+## Features
+
+- Cinematic Word of Mouth branded homepage
+- Dynamic show detail pages using slug-based routing
+- Mux video player integration for on-demand playback
+- Supabase-ready data layer with graceful local fallbacks
+- Artist Hub and streaming plan sections
+- Vercel-ready Next.js setup
+
+## Tech Stack
+
+- Next.js 16
+- React 19
+- Supabase
+- Mux Player
+- Vercel-ready app structure
+
+## Local Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev -- --port 3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Production Build
 
-## Learn More
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+app/
+  page.tsx
+  shows/[id]/page.js
+  artist/
+  live/
+lib/
+  supabase.ts
+supabase/
+  schema.sql
+  seed-shows.sql
+  additional-rules.sql
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
+This project is configured for deployment on Vercel and is designed to work with Supabase environment variables for live content.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is for demo and development purposes.
