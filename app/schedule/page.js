@@ -336,6 +336,64 @@ export default function SchedulePage() {
           text-align: center;
           font-weight: bold;
         }
+
+        @media (max-width: 640px) {
+          .schedule-shell {
+            padding: 32px 16px;
+          }
+
+          .schedule-header {
+            margin-bottom: 36px;
+          }
+
+          .schedule-header h1 {
+            font-size: 2.35rem;
+          }
+
+          .schedule-header p {
+            font-size: 1rem;
+          }
+
+          .event-item {
+            gap: 12px;
+            margin-bottom: 22px;
+          }
+
+          .event-time {
+            width: 64px;
+          }
+
+          .event-time h3 {
+            font-size: 0.95rem;
+          }
+
+          .event-card {
+            padding: 18px;
+          }
+
+          .event-card h4 {
+            font-size: 1.15rem;
+          }
+
+          .event-actions {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .action-btn {
+            width: 100%;
+            min-height: 44px;
+          }
+
+          .event-item::before {
+            left: 76px;
+          }
+
+          .modal-content {
+            width: calc(100% - 32px);
+            padding: 24px;
+          }
+        }
       `}} />
 
       <main className="schedule-shell">

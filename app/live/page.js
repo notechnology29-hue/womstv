@@ -1,69 +1,7 @@
-"use client";
+import Link from "next/link";
 
-import { useState, useEffect, useRef } from "react";
-import MuxPlayer from "@mux/mux-player-react";
-import { supabase } from "@/lib/supabase";
-
-export default function LiveBroadcastHub() {
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [username, setUsername] = useState("Viewer" + Math.floor(Math.random() * 1000));
-  const messagesEndRef = useRef(null);
-
-  // Auto-scroll to the newest message
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // Fetch initial messages and subscribe to new ones
-  useEffect(() => {
-    if (!supabase) return;
-
-    // Load recent chat history
-    const fetchMessages = async () => {
-      const { data } = await supabase
-        .from("live_chat")
-        .select("*")
-        .order("created_at", { ascending: true })
-        .limit(50);
-      
-      if (data) setMessages(data);
-    };
-
-    fetchMessages();
-
-    // Subscribe to real-time inserts
-    const channel = supabase
-      .channel("realtime chat")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "live_chat" },
-        (payload) => {
-          setMessages((prev) => [...prev, payload.new]);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !supabase) return;
-
-    const messageToSend = newMessage;
-    setNewMessage(""); // Clear input instantly for better UX
-
-    await supabase.from("live_chat").insert([
-      { username: username, message: messageToSend }
-    ]);
-  };
+export default function LivePage() {
+  const liveStreamUrl = "https://connecttoyourcity.com/channel/695c8f4e0630443ffb4c4ca3";
 
   return (
     <>
@@ -80,231 +18,159 @@ export default function LiveBroadcastHub() {
         .live-shell {
           background-color: var(--wom-jet-black);
           color: var(--wom-bright-white);
-          min-height: calc(100vh - 80px);
-          display: flex;
-          flex-direction: column;
+          min-height: 100vh;
+          padding: 60px 40px;
+          font-family: system-ui, -apple-system, sans-serif;
         }
 
-        /* Desktop Layout: Video left, Chat right */
-        @media (min-width: 1024px) {
-          .live-shell {
-            flex-direction: row;
-            height: calc(100vh - 80px); /* Assuming 80px header */
-            overflow: hidden;
-          }
+        .live-container {
+          max-width: 1200px;
+          margin: 0 auto;
         }
 
-        /* --- VIDEO SECTION --- */
-        .video-section {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          background-color: #000;
-          overflow-y: auto;
-          scrollbar-width: none;
-        }
-
-        .player-container {
-          width: 100%;
-          aspect-ratio: 16 / 9;
-          background-color: #000;
-        }
-
-        mux-player {
-          --controls: rgba(7, 20, 38, 0.9);
-          --primary-color: var(--wom-cyan-blue);
-          --live-button: #ff0000;
-          width: 100%;
-          height: 100%;
-        }
-
-        .stream-info {
-          padding: 30px 40px;
-          background-color: var(--wom-jet-black);
+        .live-header {
+          margin-bottom: 30px;
         }
 
         .live-badge {
           display: inline-block;
-          background-color: #e50914;
-          color: white;
-          padding: 4px 12px;
+          background-color: rgba(255, 77, 77, 0.1);
+          color: #ff4d4d;
+          padding: 6px 14px;
           border-radius: 4px;
-          font-weight: bold;
           font-size: 0.85rem;
+          font-weight: bold;
           text-transform: uppercase;
           letter-spacing: 1px;
           margin-bottom: 15px;
-          animation: pulse 2s infinite;
+          border: 1px solid rgba(255, 77, 77, 0.2);
         }
 
-        @keyframes pulse {
-          0% { opacity: 1; }
-          50% { opacity: 0.7; }
-          100% { opacity: 1; }
-        }
-
-        .stream-info h1 {
-          font-size: 2.2rem;
+        .live-header h1 {
+          font-size: 3rem;
+          font-weight: 800;
           margin: 0 0 10px 0;
         }
 
-        .stream-info p {
+        .live-header p {
           color: var(--wom-metallic-silver);
           font-size: 1.1rem;
-          line-height: 1.5;
-          max-width: 800px;
         }
 
-        /* --- CHAT SECTION --- */
-        .chat-section {
-          width: 100%;
-          height: 500px;
+        .player-wrapper {
+          aspect-ratio: 16 / 9;
           background-color: var(--wom-midnight-navy);
-          display: flex;
-          flex-direction: column;
-          border-left: 1px solid rgba(255,255,255,0.05);
+          border-radius: 8px;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          overflow: hidden;
+          margin-bottom: 30px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.5);
         }
 
-        @media (min-width: 1024px) {
-          .chat-section {
-            width: 400px;
-            height: 100%;
-          }
-        }
-
-        .chat-header {
-          padding: 20px;
-          border-bottom: 1px solid rgba(255,255,255,0.05);
-          font-weight: bold;
-          font-size: 1.1rem;
+        .external-action-box {
+          background-color: var(--wom-midnight-navy);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 8px;
+          padding: 30px;
           display: flex;
           justify-content: space-between;
           align-items: center;
+          flex-wrap: wrap;
+          gap: 20px;
         }
 
-        .viewer-count {
-          font-size: 0.85rem;
-          color: var(--wom-cyan-blue);
+        .external-action-box h3 {
+          margin: 0 0 5px 0;
+          font-size: 1.3rem;
         }
 
-        .chat-messages {
-          flex: 1;
-          overflow-y: auto;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        .message {
-          font-size: 0.95rem;
-          line-height: 1.4;
-        }
-
-        .message-username {
+        .external-action-box p {
+          margin: 0;
           color: var(--wom-metallic-silver);
-          font-weight: bold;
-          margin-right: 8px;
-        }
-
-        .chat-input-area {
-          padding: 20px;
-          border-top: 1px solid rgba(255,255,255,0.05);
-          background-color: rgba(0,0,0,0.2);
-        }
-
-        .chat-form {
-          display: flex;
-          gap: 10px;
-        }
-
-        .chat-input {
-          flex: 1;
-          background-color: var(--wom-jet-black);
-          border: 1px solid rgba(255,255,255,0.1);
-          color: var(--wom-bright-white);
-          padding: 12px 15px;
-          border-radius: 4px;
           font-size: 0.95rem;
-          outline: none;
-          transition: border-color 0.2s;
         }
 
-        .chat-input:focus {
-          border-color: var(--wom-cyan-blue);
-        }
-
-        .chat-submit {
+        .btn-primary {
           background-color: var(--wom-cyan-blue);
           color: var(--wom-jet-black);
-          border: none;
-          padding: 0 20px;
-          border-radius: 4px;
+          padding: 12px 28px;
+          font-size: 1rem;
           font-weight: bold;
-          cursor: pointer;
+          border-radius: 4px;
+          text-decoration: none;
           transition: background-color 0.2s;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          white-space: nowrap;
         }
 
-        .chat-submit:hover {
+        .btn-primary:hover {
           background-color: #1cbbe0;
+        }
+
+        @media (max-width: 640px) {
+          .live-shell {
+            padding: 32px 16px;
+          }
+
+          .live-header h1 {
+            font-size: 2.35rem;
+          }
+
+          .live-header p {
+            font-size: 1rem;
+            line-height: 1.5;
+          }
+
+          .external-action-box {
+            align-items: stretch;
+            padding: 20px;
+          }
+
+          .external-action-box .btn-primary {
+            width: 100%;
+          }
         }
       `}} />
 
       <main className="live-shell">
-        <section className="video-section">
-         <div className="player-container">
-  <MuxPlayer
-    streamType="on-demand" /* Temporarily changed from live */
-    playbackId="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe" /* Valid Mux Test ID */
-    primaryColor="#20D5FF"
-    autoPlay="any"
-    muted={true} /* Muted helps auto-play work in Chrome during testing */
-  />
-</div>
+        <div className="live-container">
           
-          <div className="stream-info">
-            <span className="live-badge">Live</span>
-            <h1>Wicked Awesome Comedy Presents 2 Tears in a Bucket</h1>
-            <p>Join Juan, Shad, and the rest of the crew for an exclusive live set. Streaming direct to the community.</p>
-          </div>
-        </section>
-
-        <section className="chat-section">
-          <header className="chat-header">
-            <span>Live Chat</span>
-            <span className="viewer-count">● 1,204 watching</span>
+          <header className="live-header">
+            <span className="live-badge">● Live Broadcast</span>
+            <h1>Word of Mouth Live</h1>
+            <p>Streaming conversations, live performances, and local premieres directly from our broadcast partners.</p>
           </header>
-          
-          <div className="chat-messages">
-            {messages.length === 0 ? (
-              <div style={{ color: 'var(--wom-metallic-silver)', textAlign: 'center', marginTop: '20px' }}>
-                Welcome to the live chat!
-              </div>
-            ) : (
-              messages.map((msg) => (
-                <div key={msg.id} className="message">
-                  <span className="message-username">{msg.username}</span>
-                  <span className="message-text">{msg.message}</span>
-                </div>
-              ))
-            )}
-            <div ref={messagesEndRef} />
+
+          {/* Embedded Stream Window */}
+          <div className="player-wrapper">
+            <iframe
+              src={liveStreamUrl}
+              title="Word of Mouth Live Stream"
+              style={{ width: "100%", height: "100%", border: "none" }}
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+            />
           </div>
 
-          <div className="chat-input-area">
-            <form onSubmit={handleSendMessage} className="chat-form">
-              <input
-                type="text"
-                className="chat-input"
-                placeholder="Send a message..."
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                maxLength={200}
-              />
-              <button type="submit" className="chat-submit">Send</button>
-            </form>
+          {/* Fallback / Direct External Action Bar */}
+          <div className="external-action-box">
+            <div>
+              <h3>Having trouble viewing the embedded stream?</h3>
+              <p>You can open the direct broadcast channel in a dedicated browser window.</p>
+            </div>
+            <a 
+              href={liveStreamUrl} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn-primary"
+            >
+              Open Fullscreen Stream ↗
+            </a>
           </div>
-        </section>
+
+        </div>
       </main>
     </>
   );

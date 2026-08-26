@@ -187,6 +187,51 @@ export default function InteractivePlayer({ show, relatedShows }) {
         .card-info { padding: 16px; }
         .card-info h4 { margin: 0 0 6px 0; font-size: 1.1rem; }
         .card-info p { margin: 0; font-size: 0.9rem; opacity: 0.6; }
+
+        @media (max-width: 640px) {
+          .player-wrapper {
+            aspect-ratio: 16 / 10;
+          }
+
+          .show-header,
+          .related-section {
+            padding-left: 16px;
+            padding-right: 16px;
+          }
+
+          .show-title {
+            font-size: 2rem;
+          }
+
+          .show-meta-row {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 8px;
+          }
+
+          .action-row {
+            flex-direction: column;
+            gap: 10px;
+          }
+
+          .btn-primary,
+          .btn-secondary {
+            width: 100%;
+            min-height: 44px;
+          }
+
+          .show-details-grid {
+            gap: 24px;
+          }
+
+          .related-section {
+            margin-top: 40px;
+          }
+
+          .video-card {
+            min-width: min(82vw, 300px);
+          }
+        }
       `}} />
 
       <main className="watch-shell">

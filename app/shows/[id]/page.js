@@ -5,7 +5,7 @@ import InteractivePlayer from "./InteractivePlayer";
 export const dynamic = "force-dynamic";
 
 export default async function WatchPage({ params }) {
-  const { id } = params;
+  const { id } = await params;
   const show = await fetchShowById(id);
   const relatedShows = await fetchFeaturedShows();
 

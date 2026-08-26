@@ -536,6 +536,57 @@ button {
   .hero {
     min-height: 520px;
     padding: 1.25rem;
+    border-radius: 0.75rem;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(2.2rem, 12vw, 3.2rem);
+  }
+
+  .hero-copy {
+    font-size: 1rem;
+  }
+
+  .content-section {
+    padding-top: 2rem;
+  }
+
+  .community-panel {
+    padding: 1.25rem;
+  }
+
+  .community-copy h2,
+  .plan-copy h2 {
+    font-size: 2rem;
+  }
+
+  .genre-card {
+    min-height: 84px;
+  }
+
+  .live-section {
+    padding-top: 2rem;
+  }
+
+  .live-player-container h3 {
+    font-size: 1.35rem !important;
+  }
+
+  .plan-card {
+    padding: 1.25rem;
+  }
+
+  .plan-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    width: 100%;
   }
 
   .topbar-actions,

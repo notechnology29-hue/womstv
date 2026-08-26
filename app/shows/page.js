@@ -1,23 +1,31 @@
 import { supabase, fallbackFeaturedShows } from "@/lib/supabase";
 import Link from "next/link";
 
+// Forces Next.js to fetch fresh database content on every request
+export const dynamic = "force-dynamic";
+
 export default async function ShowsCatalog({ searchParams }) {
-  const currentTag = searchParams.tag || "All";
+  const resolvedSearchParams = await searchParams;
+  const currentTag = resolvedSearchParams?.tag || "All";
   let shows = [];
 
-  // Use the database if connected, otherwise use the fallback data you defined
   if (supabase) {
     let query = supabase
       .from("shows")
-      .select("id, title, meta, tags")
+      .select("id, title, meta, tags, description, mux_playback_id, created_at")
       .order("created_at", { ascending: false });
 
     if (currentTag !== "All") {
       query = query.contains("tags", [currentTag]);
     }
 
-    const { data } = await query;
-    shows = data || fallbackFeaturedShows;
+    const { data, error } = await query;
+    
+    if (!error && data && data.length > 0) {
+      shows = data;
+    } else {
+      shows = fallbackFeaturedShows;
+    }
   } else {
     shows = fallbackFeaturedShows;
   }
@@ -120,8 +128,10 @@ export default async function ShowsCatalog({ searchParams }) {
           display: flex;
           align-items: center;
           justify-content: center;
-          opacity: 0.5;
-          color: var(--wom-bright-white);
+          color: var(--wom-cyan-blue);
+          font-weight: bold;
+          font-size: 0.9rem;
+          border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .card-info {
@@ -153,6 +163,34 @@ export default async function ShowsCatalog({ searchParams }) {
           padding: 2px 8px;
           border-radius: 4px;
         }
+
+        @media (max-width: 640px) {
+          .catalog-shell {
+            padding: 32px 16px;
+          }
+
+          .catalog-header {
+            margin-bottom: 24px;
+          }
+
+          .catalog-header h1 {
+            font-size: 2.35rem;
+          }
+
+          .catalog-header p {
+            font-size: 1rem;
+          }
+
+          .filter-row {
+            margin: 0 -16px 28px;
+            padding: 0 16px 10px;
+          }
+
+          .catalog-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 16px;
+          }
+        }
       `}} />
 
       <main className="catalog-shell">
@@ -180,12 +218,14 @@ export default async function ShowsCatalog({ searchParams }) {
         <div className="catalog-grid">
           {shows.map((show) => (
             <Link key={show.id} href={`/shows/${show.id}`} className="video-card">
-              <div className="thumbnail">16:9 Thumbnail</div>
+              <div className="thumbnail">
+                {show.mux_playback_id ? "▶ WATCH NOW" : "⚙ PROCESSING"}
+              </div>
               <div className="card-info">
                 <h3>{show.title}</h3>
-                <p>{show.meta}</p>
+                <p>{show.meta || show.description || "Original • Network Premiere"}</p>
                 <div className="card-tags">
-                  {show.tags?.slice(0, 3).map(tag => (
+                  {show.tags?.map(tag => (
                     <span key={tag} className="card-tag">{tag}</span>
                   ))}
                 </div>
