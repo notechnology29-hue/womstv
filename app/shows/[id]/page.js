@@ -11,7 +11,7 @@ export default async function WatchPage({ params }) {
     return notFound();
   }
 
-  const isReady = show.mux_playback_id && show.mux_playback_id.trim() !== "";
+  const isReady = show.muxPlaybackId && show.muxPlaybackId.trim() !== "";
 
   return (
     <>
@@ -82,7 +82,7 @@ export default async function WatchPage({ params }) {
             {isReady ? (
               // Insert your Mux player here (e.g., <mux-player playback-id={show.mux_playback_id} ... />)
               <iframe
-                src={`https://stream.mux.com/${show.mux_playback_id}.html`}
+                src={`https://stream.mux.com/${show.muxPlaybackId}.html`}
                 style={{ width: "100%", height: "100%", border: "none" }}
                 allowFullScreen
               />
