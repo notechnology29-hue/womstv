@@ -1,6 +1,5 @@
+import Image from "next/image";
 import { fetchFeaturedShows } from "@/lib/supabase";
-
-const navItems = ["Merch", "Shows", "Live", "Schedule", "Radio", "About"];
 
 const localArtists = [
   { name: "Lena Hart", region: "Brooklyn, NY", tag: "Indie Folk" },
@@ -34,32 +33,28 @@ const schedule = [
 export default async function Home() {
   const featuredTitles = await fetchFeaturedShows();
   const featuredSlug = featuredTitles[0]?.id ?? "lead-program-title";
+  
+  // Added query parameters for reliable, muted autoplay
+  const embedUrl = "https://connecttoyourcity.com/channel/695c8f4e0630443ffb4c4ca3?autoplay=1&muted=1";
 
   return (
     <>
-      <header className="topbar">
-        <div className="brand-mark">WORD OF MOUTH</div>
-        <nav className="main-nav" aria-label="Main navigation">
-          {navItems.map((item) => (
-            <a href="#" key={item}>
-              {item}
-            </a>
-          ))}
-        </nav>
-        <div className="topbar-actions">
-          <button className="artist-btn">Artist Hub</button>
-          <button className="premium-btn">Go Premium</button>
-        </div>
-      </header>
-
       <main className="page-shell">
         <section className="hero">
           <div className="hero-overlay" />
           <div className="hero-content">
-            <p className="eyebrow">Featured Indie Premiere</p>
-            <h1>Lead Program Title</h1>
+            <Image
+              src="/logo.png"
+              alt="Word of Mouth Television"
+              width={96}
+              height={96}
+              className="hero-logo"
+              priority
+            />
+            <p className="eyebrow">Featured Indie Premiere Coming Soon</p>
+            <h1>Wicked Awesome Comedy Coming Soon</h1>
             <p className="hero-copy">
-              Short description, host name, episode information, and release schedule.
+              The sharpest local comics audition for a chance to compete, We place them into an uncompromising multi-stage tournament, and build the infrastructure to launch their careers on a national scale.
               Original voices, global reach.
             </p>
             <a href={`/shows/${featuredSlug}`} className="primary-btn" style={{ display: "inline-flex" }}>
@@ -87,15 +82,15 @@ export default async function Home() {
 
         <section className="community-panel">
           <div className="community-copy">
-            <p className="eyebrow">Artist Hub</p>
+            <p className="eyebrow">Artist Hub Coming Soon</p>
             <h2>Submit your story to the next wave of creators.</h2>
             <p>
               Upload your work, review submissions, and connect with a community built
               around independent voices.
             </p>
-            <button className="primary-btn">Access Artist Portal</button>
+            <button className="primary-btn">Artist Portal Access Coming Soon</button>
           </div>
-          <div className="ad-slot">Ad Placeholder</div>
+          <div className="ad-slot">Your Ad Here</div>
         </section>
 
         <section className="content-section">
@@ -130,16 +125,50 @@ export default async function Home() {
         </section>
 
         <section className="live-section">
-          <div className="live-player">
-            <span className="live-badge">Live Now</span>
-            <div className="live-meta">
-              <h3>Word of Mouth Live</h3>
-              <p>Streaming conversations, interviews, and local premieres.</p>
+          <div className="live-player-container" style={{ flex: 1, display: "flex", flexDirection: "column", gap: "15px" }}>
+            
+            <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+              <span style={{ 
+                backgroundColor: "rgba(255, 77, 77, 0.1)", 
+                color: "#ff4d4d", 
+                padding: "6px 12px", 
+                borderRadius: "4px", 
+                fontSize: "0.85rem", 
+                fontWeight: "bold", 
+                textTransform: "uppercase",
+                border: "1px solid rgba(255, 77, 77, 0.2)"
+              }}>
+                ● Live Now
+              </span>
+              <h3 style={{ margin: 0, fontSize: "1.8rem" }}>Word of Mouth Live</h3>
             </div>
+
+            <div style={{ 
+              aspectRatio: "16/9", 
+              width: "100%", 
+              backgroundColor: "#071426", 
+              borderRadius: "8px", 
+              overflow: "hidden", 
+              border: "1px solid rgba(255, 255, 255, 0.05)",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.5)"
+            }}>
+              <iframe
+                src={embedUrl}
+                title="Word of Mouth Live Stream"
+                style={{ width: "100%", height: "100%", border: "none" }}
+                allow="autoplay; fullscreen; picture-in-picture"
+                loading="lazy"
+                allowFullScreen
+              />
+            </div>
+            
+            <p style={{ color: "#AEB8C4", margin: 0, fontSize: "1.1rem" }}>
+              Streaming conversations, interviews, and local premieres.
+            </p>
           </div>
 
           <aside className="side-stack">
-            <div className="ad-slot tall">Ad Placeholder</div>
+            <div className="ad-slot tall">Ads Coming Soon</div>
             <div className="schedule-card">
               <h3>Tonight&apos;s Schedule</h3>
               <ul>
@@ -157,7 +186,7 @@ export default async function Home() {
         <section className="plan-section">
           <div className="plan-copy">
             <p className="eyebrow">Choose Your Plan</p>
-            <h2>Watch free or go premium.</h2>
+            <h2>Watch free or go premium Coming Soon.</h2>
           </div>
 
           <div className="plan-grid">
@@ -167,22 +196,22 @@ export default async function Home() {
                 <span className="plan-price">$0</span>
               </div>
               <ul>
-                <li>Ad-supported streaming</li>
-                <li>Live programming access</li>
-                <li>Community creator portal</li>
+                <li>Ad-supported streaming Coming Soon</li>
+                <li>Live programming access </li>
+                <li>Community creator portal Coming Soon</li>
               </ul>
               <button className="secondary-btn">Start Watching</button>
             </div>
 
             <div className="plan-card premium-plan">
               <div className="plan-header">
-                <h3>Premium</h3>
+                <h3>Premium Comming Soon</h3>
                 <span className="plan-price">$9.99/mo</span>
               </div>
               <ul>
                 <li>Ad-free viewing</li>
                 <li>Offline downloads</li>
-                <li>Early access to premieres</li>
+                <li>Early access to premieres Coming Soon</li>
               </ul>
               <button className="premium-btn premium-inverse">Go Premium</button>
             </div>

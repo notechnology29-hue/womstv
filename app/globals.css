@@ -151,6 +151,12 @@ button {
   max-width: 620px;
 }
 
+.hero-logo {
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
 .eyebrow {
   margin: 0 0 0.65rem;
   color: var(--wom-cyan-blue);
@@ -186,10 +192,28 @@ button {
   font-size: clamp(1.5rem, 2vw, 2rem);
 }
 
+/* --- Horizontal Video Carousels --- */
 .video-row {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  display: flex;
   gap: 1.25rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
+  scrollbar-width: none;             /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none;          /* Hide scrollbar for IE/Edge */
+  padding: 0.15rem 0.1rem 1.25rem;
+  width: 100%;
+}
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+.video-row::-webkit-scrollbar {
+  display: none;
+}
+
+.video-row .video-card {
+  flex: 0 0 clamp(220px, 28vw, 320px); /* Keeps it responsive but stops squishing */
+  scroll-snap-align: start;
 }
 
 .video-card {
@@ -198,10 +222,12 @@ button {
   border: 1px solid var(--border-soft);
   background: var(--panel-fill);
   transition: border-color 0.2s ease, transform 0.2s ease;
+  text-decoration: none;
+  display: block;
 }
 
 .video-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   border-color: rgba(32, 213, 255, 0.7);
 }
 
@@ -507,7 +533,6 @@ button {
     padding: 1rem 1rem 1.2rem;
   }
 
-  .video-row,
   .genre-grid,
   .plan-grid,
   .community-panel,
@@ -524,7 +549,7 @@ button {
   }
 
   .video-row {
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    gap: 1rem;
   }
 }
 
@@ -595,13 +620,27 @@ button {
     justify-content: center;
   }
 
-  .video-row,
-  .genre-grid,
-  .plan-grid {
-    grid-template-columns: 1fr;
+  .video-row {
+    gap: 0.85rem;
+    margin-right: -0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  .video-row .video-card {
+    flex-basis: min(78vw, 290px);
   }
 
   .site-footer {
     padding: 1.5rem 1rem 2.25rem;
   }
 }
+.live-player-container {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  .live-player-container > div:first-child {
+    justify-content: center;
+  }
