@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
@@ -37,11 +38,18 @@ export default async function Navbar() {
         }
 
         .nav-brand {
+          display: flex;
+          align-items: center;
+          gap: 10px;
           font-size: 1.5rem;
           font-weight: 900;
           color: #FFFFFF;
           text-decoration: none;
           letter-spacing: -0.5px;
+        }
+
+        .nav-logo {
+          border-radius: 6px;
         }
 
         .nav-brand span {
@@ -148,6 +156,7 @@ export default async function Navbar() {
         <div className="nav-container">
           {/* Logo */}
           <Link href="/" className="nav-brand">
+            <Image src="/logo.png" alt="" width={32} height={32} className="nav-logo" priority />
             WOM<span>.</span>
           </Link>
 
@@ -166,7 +175,7 @@ export default async function Navbar() {
               </Link>
             ) : (
               <Link href="/login" className="btn-nav-login">
-                Artist Login
+                Login
               </Link>
             )}
           </div>
