@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import MuxPlayer from "@mux/mux-player-react";
-import { approveShow, denyShow, setFeaturedShow } from "./actions";
+import { approveShow, denyShow, setFeaturedShow, uploadPoster } from "./actions";
 
 function ScreeningRoomCard({ show }) {
   const [isPending, startTransition] = useTransition();
@@ -57,14 +57,34 @@ function ScreeningRoomCard({ show }) {
 function PublishedRow({ show }) {
   const [isPending, startTransition] = useTransition();
 
+  const handlePosterChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("poster", file);
+    startTransition(() => uploadPoster(show.id, formData));
+  };
+
   return (
     <div className="published-row">
-      <div>
+      {show.poster_url ? (
+        <img src={show.poster_url} alt="" className="poster-thumb" />
+      ) : (
+        <div className="poster-thumb poster-thumb-empty" aria-hidden="true" />
+      )}
+
+      <div style={{ flex: 1 }}>
         <h4 style={{ margin: "0 0 4px 0" }}>{show.title}</h4>
         <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--wom-metallic-silver)" }}>
           {show.genre || "Uncategorized"}
         </p>
       </div>
+
+      <label className="poster-upload-btn">
+        {isPending ? "Uploading..." : "Upload Poster"}
+        <input type="file" accept="image/*" onChange={handlePosterChange} disabled={isPending} hidden />
+      </label>
 
       <button
         className={show.is_featured ? "featured-btn active" : "featured-btn"}
@@ -148,11 +168,40 @@ export default function AdminQueue({ pendingShows, publishedShows }) {
 
         .published-row {
           display: flex;
-          justify-content: space-between;
           align-items: center;
+          gap: 15px;
           padding: 15px;
           background-color: var(--wom-jet-black);
           border-radius: 6px;
+        }
+
+        .poster-thumb {
+          width: 72px;
+          height: 40px;
+          border-radius: 4px;
+          object-fit: cover;
+          background: rgba(255, 255, 255, 0.05);
+          flex-shrink: 0;
+        }
+
+        .poster-thumb-empty {
+          border: 1px dashed rgba(255, 255, 255, 0.15);
+        }
+
+        .poster-upload-btn {
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          color: var(--wom-bright-white);
+          padding: 8px 16px;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          font-weight: bold;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+
+        .poster-upload-btn:hover {
+          border-color: var(--wom-cyan-blue);
         }
 
         .featured-btn {

@@ -94,3 +94,38 @@ export async function setFeaturedShow(showId) {
   revalidatePath("/admin");
   revalidatePath("/");
 }
+
+export async function uploadPoster(showId, formData) {
+  await assertAdmin();
+
+  const file = formData.get("poster");
+  if (!file || typeof file === "string" || file.size === 0) {
+    throw new Error("Please choose an image file.");
+  }
+
+  const admin = createAdminClient();
+  const extension = file.name.split(".").pop() || "jpg";
+  const path = `${showId}-${Date.now()}.${extension}`;
+
+  const { error: uploadError } = await admin.storage.from("posters").upload(path, file, {
+    contentType: file.type,
+    upsert: true,
+  });
+
+  if (uploadError) {
+    throw new Error(`Failed to upload poster: ${uploadError.message}`);
+  }
+
+  const {
+    data: { publicUrl },
+  } = admin.storage.from("posters").getPublicUrl(path);
+
+  const { error: updateError } = await admin.from("shows").update({ poster_url: publicUrl }).eq("id", showId);
+
+  if (updateError) {
+    throw new Error(`Failed to save poster URL: ${updateError.message}`);
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/");
+}
