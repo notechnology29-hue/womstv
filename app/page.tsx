@@ -51,8 +51,8 @@ export default async function Home() {
               className="hero-logo"
               priority
             />
-            <p className="eyebrow">Featured Indie Premiere Coming Soon</p>
-            <h1>Wicked Awesome Comedy Coming Soon</h1>
+            <p className="eyebrow">Featured Indie Premiere</p>
+            <h1>Wicked Awesome Comedy</h1>
             <p className="hero-copy">
               The sharpest local comics audition for a chance to compete, We place them into an uncompromising multi-stage tournament, and build the infrastructure to launch their careers on a national scale.
               Original voices, global reach.
@@ -82,15 +82,15 @@ export default async function Home() {
 
         <section className="community-panel">
           <div className="community-copy">
-            <p className="eyebrow">Artist Hub Coming Soon</p>
+            <p className="eyebrow">Artist Hub</p>
             <h2>Submit your story to the next wave of creators.</h2>
             <p>
               Upload your work, review submissions, and connect with a community built
               around independent voices.
             </p>
-            <button className="primary-btn">Artist Portal Access Coming Soon</button>
+            <a href="/artist" className="primary-btn">Enter Artist Portal</a>
           </div>
-          <div className="ad-slot">Your Ad Here</div>
+          <div className="ad-slot" aria-hidden="true" />
         </section>
 
         <section className="content-section">
@@ -168,7 +168,7 @@ export default async function Home() {
           </div>
 
           <aside className="side-stack">
-            <div className="ad-slot tall">Ads Coming Soon</div>
+            <div className="ad-slot tall" aria-hidden="true" />
             <div className="schedule-card">
               <h3>Tonight&apos;s Schedule</h3>
               <ul>
@@ -186,7 +186,7 @@ export default async function Home() {
         <section className="plan-section">
           <div className="plan-copy">
             <p className="eyebrow">Choose Your Plan</p>
-            <h2>Watch free or go premium Coming Soon.</h2>
+            <h2>Watch free or go premium.</h2>
           </div>
 
           <div className="plan-grid">
@@ -196,26 +196,54 @@ export default async function Home() {
                 <span className="plan-price">$0</span>
               </div>
               <ul>
-                <li>Ad-supported streaming Coming Soon</li>
-                <li>Live programming access </li>
-                <li>Community creator portal Coming Soon</li>
+                <li>Ad-supported streaming</li>
+                <li>Live programming access</li>
+                <li>Community creator portal</li>
               </ul>
               <button className="secondary-btn">Start Watching</button>
             </div>
 
             <div className="plan-card premium-plan">
               <div className="plan-header">
-                <h3>Premium Comming Soon</h3>
+                <h3>Premium</h3>
                 <span className="plan-price">$9.99/mo</span>
               </div>
               <ul>
                 <li>Ad-free viewing</li>
                 <li>Offline downloads</li>
-                <li>Early access to premieres Coming Soon</li>
+                <li>Early access to premieres</li>
               </ul>
               <button className="premium-btn premium-inverse">Go Premium</button>
             </div>
           </div>
+        </section>
+
+        <section className="seo-intro">
+          <h2>Word of Mouth Television: Streaming Independent Voices Nationwide</h2>
+          <p>
+            Word of Mouth Television is the premier streaming destination for independent
+            voices, live performances, and local culture. Founded to give overlooked comedians,
+            musicians, and filmmakers a national stage, our platform curates original comedy
+            specials, underground music sessions, and documentary-style series shot in cities
+            across the country. Every program on Word of Mouth Television is selected, produced,
+            or reviewed by our editorial team to ensure a consistent, high-quality viewing
+            experience for our audience.
+          </p>
+          <p>
+            Our catalog spans multiple genres, including comedy, drama, documentary, music, and
+            reality programming, with new episodes added on a rolling schedule. In addition to
+            on-demand titles, Word of Mouth Live broadcasts nightly conversations, interviews,
+            and premiere events, giving viewers a real-time connection to the artists featured
+            on the network. Our Artist Hub allows independent creators to submit their work
+            directly for consideration, review submission status, and connect with a growing
+            community built around original storytelling.
+          </p>
+          <p>
+            Whether you are discovering a new stand-up special, tuning into a live broadcast, or
+            exploring our local artist showcase, Word of Mouth Television is built to surface
+            the stories mainstream networks overlook. Browse our full show catalog, check
+            tonight&apos;s schedule, or watch live to experience the network firsthand.
+          </p>
         </section>
       </main>
 
@@ -228,24 +256,24 @@ export default async function Home() {
         <div className="footer-links">
           <div>
             <h4>Explore</h4>
-            <a href="#">Watch</a>
-            <a href="#">Shows</a>
-            <a href="#">Live</a>
-            <a href="#">Radio</a>
+            <a href="/shows">Watch</a>
+            <a href="/shows">Shows</a>
+            <a href="/live">Live</a>
+            <a href="/schedule">Schedule</a>
           </div>
           <div>
             <h4>Company</h4>
-            <a href="#">About</a>
-            <a href="#">Press</a>
-            <a href="#">Partners</a>
-            <a href="#">Careers</a>
+            <a href="/about">About</a>
+            <a href="/artist">Artist Hub</a>
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
           </div>
           <div>
             <h4>Plans & Support</h4>
-            <a href="#">Account</a>
-            <a href="#">Plans</a>
-            <a href="#">Help Center</a>
-            <a href="#">Contact</a>
+            <a href="/login">Account</a>
+            <a href="/artist/dashboard">Artist Dashboard</a>
+            <a href="/about">Help Center</a>
+            <a href="/about">Contact</a>
           </div>
         </div>
       </footer>

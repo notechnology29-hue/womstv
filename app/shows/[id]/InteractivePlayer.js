@@ -39,19 +39,17 @@ export default function InteractivePlayer({ show, relatedShows }) {
           min-height: 100vh;
         }
 
+        /* Apple TV styled wrapper */
         .player-wrapper {
           width: 100%;
           max-width: 1400px;
           margin: 0 auto;
           background-color: #000;
           aspect-ratio: 16 / 9;
-        }
-
-        mux-player {
-          --controls: rgba(7, 20, 38, 0.9);
-          --primary-color: var(--wom-cyan-blue);
-          width: 100%;
-          height: 100%;
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+          overflow: hidden;
         }
 
         .show-header {
@@ -89,11 +87,11 @@ export default function InteractivePlayer({ show, relatedShows }) {
           display: flex;
           gap: 15px;
           margin-bottom: 30px;
-          flex-wrap: wrap; /* Helps buttons stack nicely on small mobile screens */
+          flex-wrap: wrap;
         }
 
         .btn-primary {
-          background-color: var(--wom-cyan-blue);
+          background-color: var(--wom-bright-white);
           color: var(--wom-jet-black);
           border: none;
           padding: 12px 28px;
@@ -105,7 +103,7 @@ export default function InteractivePlayer({ show, relatedShows }) {
         }
 
         .btn-primary:hover {
-          background-color: #1cbbe0;
+          background-color: var(--wom-metallic-silver);
         }
 
         .btn-secondary {
@@ -191,6 +189,7 @@ export default function InteractivePlayer({ show, relatedShows }) {
         @media (max-width: 640px) {
           .player-wrapper {
             aspect-ratio: 16 / 10;
+            border-radius: 0; /* Flat edges on mobile look better */
           }
 
           .show-header,
@@ -236,16 +235,22 @@ export default function InteractivePlayer({ show, relatedShows }) {
 
       <main className="watch-shell">
         <div className="player-wrapper">
-          {/* 3. Attach the ref to the MUX Player */}
+          {/* 3. The Clean Apple TV Style Mux Player */}
           <MuxPlayer
             ref={playerRef}
             streamType="on-demand"
             playbackId={show.muxPlaybackId}
-            metadata={{
-              video_id: show.id,
-              video_title: show.title,
+            primaryColor="#FFFFFF"
+            secondaryColor="rgba(0, 0, 0, 0.4)"
+            accentColor="#FFFFFF"
+            style={{ 
+              width: "100%", 
+              height: "100%",
+              "--media-control-bar-background": "rgba(20, 20, 20, 0.65)",
+              "--media-control-hover-background": "rgba(255, 255, 255, 0.15)",
+              "--media-range-track-height": "4px",
+              "--media-range-thumb-background": "#FFFFFF",
             }}
-            primaryColor="#20D5FF"
           />
         </div>
 
@@ -261,12 +266,7 @@ export default function InteractivePlayer({ show, relatedShows }) {
 
           <div className="action-row">
             <button className="btn-primary" onClick={() => playerRef.current?.play()}>▶ Play</button>
-            
-            {/* 4. The new Full Screen Button */}
-            <button className="btn-secondary" onClick={triggerFullScreen}>
-               ⛶ Full Screen
-            </button>
-            
+            <button className="btn-secondary" onClick={triggerFullScreen}>⛶ Full Screen</button>
             <button className="btn-secondary">+ Add to List</button>
           </div>
 

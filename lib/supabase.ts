@@ -57,10 +57,11 @@ export async function fetchFeaturedShows() {
 }
 
 export async function fetchShowById(idOrSlug: string) {
-  if (!supabase) {
-    return { ...fallbackShow, id: idOrSlug };
+  if (!supabase || !idOrSlug) {
+    return { ...fallbackShow, id: idOrSlug || "unknown" };
   }
 
+  // First try to find by slug
   const bySlug = await supabase
     .from("shows")
     .select("*")
@@ -80,9 +81,21 @@ export async function fetchShowById(idOrSlug: string) {
       tags: Array.isArray(bySlug.data.tags) ? bySlug.data.tags : fallbackShow.tags,
       cast: Array.isArray(bySlug.data.cast) ? bySlug.data.cast : fallbackShow.cast,
       director: bySlug.data.director ?? fallbackShow.director,
+      // Explicitly exclude Date fields to ensure serializability for Server->Client transmission
     };
   }
 
+  // If slug lookup didn't find anything, don't try UUID lookup if it's not a valid UUID
+  // Check if idOrSlug looks like a UUID (simple heuristic: contains hyphens and is the right length)
+  const isLikelyUuid = idOrSlug.includes("-") && idOrSlug.length > 30;
+  
+  if (!isLikelyUuid) {
+    // Not a UUID, return fallback
+    console.log(`Show not found by slug "${idOrSlug}", returning fallback data`);
+    return { ...fallbackShow, id: idOrSlug };
+  }
+
+  // Try by UUID ID as fallback
   const byId = await supabase
     .from("shows")
     .select("*")
@@ -90,7 +103,7 @@ export async function fetchShowById(idOrSlug: string) {
     .single();
 
   if (byId.error) {
-    console.error("Supabase single show lookup failed:", byId.error.message);
+    console.log(`Show not found by ID "${idOrSlug}", using fallback data`);
     return { ...fallbackShow, id: idOrSlug };
   }
 
@@ -110,5 +123,6 @@ export async function fetchShowById(idOrSlug: string) {
     tags: Array.isArray(byId.data.tags) ? byId.data.tags : fallbackShow.tags,
     cast: Array.isArray(byId.data.cast) ? byId.data.cast : fallbackShow.cast,
     director: byId.data.director ?? fallbackShow.director,
+    // Explicitly exclude Date fields to ensure serializability for Server->Client transmission
   };
 }
