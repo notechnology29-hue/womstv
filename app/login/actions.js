@@ -1,13 +1,11 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function login(formData) {
-  if (!supabase) {
-    return { error: "Supabase not configured" };
-  }
+  const supabase = await createClient();
 
   const email = formData.get("email");
   const password = formData.get("password");
@@ -26,9 +24,7 @@ export async function login(formData) {
 }
 
 export async function signup(formData) {
-  if (!supabase) {
-    return { error: "Supabase not configured" };
-  }
+  const supabase = await createClient();
 
   const email = formData.get("email");
   const password = formData.get("password");

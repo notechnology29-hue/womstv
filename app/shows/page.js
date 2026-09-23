@@ -13,6 +13,7 @@ export default async function ShowsCatalog({ searchParams }) {
     let query = supabase
       .from("shows")
       .select("id, title, meta, tags, description, mux_playback_id, created_at")
+      .eq("status", "published")
       .order("created_at", { ascending: false });
 
     if (currentTag !== "All") {

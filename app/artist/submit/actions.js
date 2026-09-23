@@ -1,11 +1,18 @@
 "use server";
 
 import Mux from "@mux/mux-node";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export async function createUploadTicket(formData) {
-  if (!supabase) {
-    throw new Error("Supabase not configured");
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("You must be logged in to submit a show.");
   }
 
   const title = formData?.get?.("title") || "Untitled";
@@ -28,23 +35,30 @@ export async function createUploadTicket(formData) {
     const upload = await muxClient.video.uploads.create({
       new_asset_settings: {
         playback_policy: ["public"],
+        mp4_support: "standard",
       },
       cors_origin: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
     });
 
-    // 2. Insert a placeholder row into your Supabase 'shows' table
-    // Note: artist_id would need to come from auth context in production
+    // 2. Insert a placeholder row into the Supabase 'shows' table
     const { error: dbError } = await supabase.from("shows").insert({
       title: title,
       description: description,
       meta: "Indie • Just Added",
       tags: ["Indie", "New"],
-      mux_playback_id: null, // Will update once Mux finishes processing via webhook
+      status: "pending",
+      artist_id: user.id,
+      mux_asset_id: upload.id, // rewritten to the real asset id by the Mux webhook
     });
 
     if (dbError) {
       console.error("Database insert failed:", dbError);
+      throw new Error("Failed to save your submission. Please try again.");
     }
+
+    revalidatePath("/shows");
+    revalidatePath("/");
+    revalidatePath("/artist/dashboard");
 
     return upload.url;
   } catch (err) {
@@ -52,20 +66,5 @@ export async function createUploadTicket(formData) {
     throw new Error(`Failed to initialize upload: ${err.message}`);
   }
 }
-// Add revalidatePath to your imports from "next/cache"
-import { revalidatePath } from "next/cache";
 
-// ... inside your createUploadTicket function after the Supabase insert:
-const { error: dbError } = await supabase.from("shows").insert({
-  title: title,
-  description: description,
-  meta: "Indie • Just Added",
-  tags: ["Indie", "New"],
-  artist_id: user.id,
-  mux_playback_id: null, 
-});
-
-// Force Next.js to immediately refresh the catalog and home pages
-revalidatePath("/shows");
-revalidatePath("/");
 revalidatePath("/artist/dashboard");

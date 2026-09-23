@@ -1,18 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function Navbar() {
-  // 1. Initialize Supabase to check for an active session
+  // 1. Check for an active session via the cookie-aware SSR client
   let user = null;
-  
-  if (supabase) {
-    try {
-      const { data } = await supabase.auth.getUser();
-      user = data?.user;
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
+
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    user = data?.user;
+  } catch (error) {
+    console.error("Error fetching user:", error);
   }
 
   return (
@@ -156,7 +155,7 @@ export default async function Navbar() {
         <div className="nav-container">
           {/* Logo */}
           <Link href="/" className="nav-brand">
-            <Image src="/logo.png" alt="" width={32} height={32} className="nav-logo" priority />
+            <Image src="/logo.png" alt="" width={32} height={32} className="nav-logo" style={{ height: "auto" }} priority />
             WOM<span>.</span>
           </Link>
 

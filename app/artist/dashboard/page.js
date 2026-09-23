@@ -1,12 +1,10 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { signout } from "./actions";
 
 export default async function ArtistDashboard() {
-  if (!supabase) {
-    redirect("/login");
-  }
+  const supabase = await createClient();
 
   try {
     const { data: { user }, error: authError } = await supabase.auth.getUser();

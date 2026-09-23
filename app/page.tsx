@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { fetchFeaturedShows } from "@/lib/supabase";
+import { fetchFeaturedShows, fetchHeroShow } from "@/lib/supabase";
 
 const localArtists = [
   { name: "Lena Hart", region: "Brooklyn, NY", tag: "Indie Folk" },
@@ -32,15 +32,22 @@ const schedule = [
 
 export default async function Home() {
   const featuredTitles = await fetchFeaturedShows();
-  const featuredSlug = featuredTitles[0]?.id ?? "lead-program-title";
-  
+  const heroShow = await fetchHeroShow();
+
   // Added query parameters for reliable, muted autoplay
   const embedUrl = "https://connecttoyourcity.com/channel/695c8f4e0630443ffb4c4ca3?autoplay=1&muted=1";
 
   return (
     <>
       <main className="page-shell">
-        <section className="hero">
+        <section
+          className="hero"
+          style={
+            heroShow.posterUrl
+              ? { backgroundImage: `url(${heroShow.posterUrl})`, backgroundSize: "cover", backgroundPosition: "center" }
+              : undefined
+          }
+        >
           <div className="hero-overlay" />
           <div className="hero-content">
             <Image
@@ -49,15 +56,13 @@ export default async function Home() {
               width={96}
               height={96}
               className="hero-logo"
+              style={{ height: "auto" }}
               priority
             />
             <p className="eyebrow">Featured Indie Premiere</p>
-            <h1>Wicked Awesome Comedy</h1>
-            <p className="hero-copy">
-              The sharpest local comics audition for a chance to compete, We place them into an uncompromising multi-stage tournament, and build the infrastructure to launch their careers on a national scale.
-              Original voices, global reach.
-            </p>
-            <a href={`/shows/${featuredSlug}`} className="primary-btn" style={{ display: "inline-flex" }}>
+            <h1>{heroShow.title}</h1>
+            <p className="hero-copy">{heroShow.description}</p>
+            <a href={`/shows/${heroShow.id}`} className="primary-btn" style={{ display: "inline-flex" }}>
               ▶ Watch Now
             </a>
           </div>
@@ -216,34 +221,6 @@ export default async function Home() {
               <button className="premium-btn premium-inverse">Go Premium</button>
             </div>
           </div>
-        </section>
-
-        <section className="seo-intro">
-          <h2>Word of Mouth Television: Streaming Independent Voices Nationwide</h2>
-          <p>
-            Word of Mouth Television is the premier streaming destination for independent
-            voices, live performances, and local culture. Founded to give overlooked comedians,
-            musicians, and filmmakers a national stage, our platform curates original comedy
-            specials, underground music sessions, and documentary-style series shot in cities
-            across the country. Every program on Word of Mouth Television is selected, produced,
-            or reviewed by our editorial team to ensure a consistent, high-quality viewing
-            experience for our audience.
-          </p>
-          <p>
-            Our catalog spans multiple genres, including comedy, drama, documentary, music, and
-            reality programming, with new episodes added on a rolling schedule. In addition to
-            on-demand titles, Word of Mouth Live broadcasts nightly conversations, interviews,
-            and premiere events, giving viewers a real-time connection to the artists featured
-            on the network. Our Artist Hub allows independent creators to submit their work
-            directly for consideration, review submission status, and connect with a growing
-            community built around original storytelling.
-          </p>
-          <p>
-            Whether you are discovering a new stand-up special, tuning into a live broadcast, or
-            exploring our local artist showcase, Word of Mouth Television is built to surface
-            the stories mainstream networks overlook. Browse our full show catalog, check
-            tonight&apos;s schedule, or watch live to experience the network firsthand.
-          </p>
         </section>
       </main>
 

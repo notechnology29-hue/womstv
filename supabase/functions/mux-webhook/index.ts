@@ -58,6 +58,30 @@ serve(async (req: Request) => {
 
     console.log("Received Mux webhook event:", event);
 
+    // Handle video.asset.created: correlate the temporary upload id
+    // (stored as mux_asset_id at submission time) with the real asset id.
+    if (event === "video.asset.created") {
+      const assetId = data.id;
+      const uploadId = data.upload_id;
+
+      if (!uploadId) {
+        console.log("Asset created without an upload_id, nothing to correlate");
+        return new Response("Event received", { status: 200 });
+      }
+
+      const { error } = await supabase
+        .from("shows")
+        .update({ mux_asset_id: assetId })
+        .eq("mux_asset_id", uploadId);
+
+      if (error) {
+        console.error("Failed to correlate asset id:", error);
+        return new Response("Database update failed", { status: 500 });
+      }
+
+      return new Response("Webhook processed", { status: 200 });
+    }
+
     // Handle video.asset.ready event
     if (event === "video.asset.ready") {
       const assetId = data.id;
@@ -74,11 +98,12 @@ serve(async (req: Request) => {
       });
 
       // Update the shows table with the playback ID
-      // The asset passthrough should contain the show record ID or slug
+      // The mux_asset_id column is kept in sync via the video.asset.created handler above
       const { error } = await supabase
         .from("shows")
         .update({ mux_playback_id: playbackId })
         .eq("mux_asset_id", assetId);
+
 
       if (error) {
         console.error("Failed to update show record:", error);

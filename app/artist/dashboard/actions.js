@@ -1,14 +1,12 @@
 // app/artist/dashboard/actions.js
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function signout() {
-  if (!supabase) {
-    redirect("/login");
-  }
+  const supabase = await createClient();
 
   try {
     await supabase.auth.signOut();
