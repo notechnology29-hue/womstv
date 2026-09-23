@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import MuxPlayer from "@mux/mux-player-react";
+import { generateThumbnail } from "@/lib/thumbnail";
 
 export default function InteractivePlayer({ show, relatedShows }) {
   // 1. Create a reference to target the Mux Player DOM element
@@ -289,7 +290,7 @@ export default function InteractivePlayer({ show, relatedShows }) {
           <div className="video-row">
             {relatedShows.map((item) => (
               <a key={item.id} href={`/shows/${item.id}`} className="video-card">
-                <div className="thumbnail">16:9 Thumbnail</div>
+                <div className="thumbnail" style={{ backgroundImage: `url(${generateThumbnail(item.title, item.meta)})`, backgroundSize: "cover", opacity: 1 }} />
                 <div className="card-info">
                   <h4>{item.title}</h4>
                   <p>{item.meta}</p>

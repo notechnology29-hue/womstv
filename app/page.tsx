@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { fetchFeaturedShows, fetchHeroShow } from "@/lib/supabase";
+import { generateThumbnail } from "@/lib/thumbnail";
 
 const localArtists = [
   { name: "Lena Hart", region: "Brooklyn, NY", tag: "Indie Folk" },
@@ -75,7 +76,7 @@ export default async function Home() {
           <div className="video-row">
             {featuredTitles.map((item) => (
               <a key={item.title} href={`/shows/${item.id}`} className="video-card">
-                <div className="thumbnail">16:9</div>
+                <div className="thumbnail" style={{ backgroundImage: `url(${generateThumbnail(item.title, item.meta)})`, backgroundSize: "cover" }} />
                 <div className="card-info">
                   <h3>{item.title}</h3>
                   <p>{item.meta}</p>

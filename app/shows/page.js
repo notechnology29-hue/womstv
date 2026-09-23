@@ -1,4 +1,5 @@
 import { supabase, fallbackFeaturedShows } from "@/lib/supabase";
+import { generateThumbnail } from "@/lib/thumbnail";
 import Link from "next/link";
 
 // Forces Next.js to fetch fresh database content on every request
@@ -219,7 +220,10 @@ export default async function ShowsCatalog({ searchParams }) {
         <div className="catalog-grid">
           {shows.map((show) => (
             <Link key={show.id} href={`/shows/${show.id}`} className="video-card">
-              <div className="thumbnail">
+              <div
+                className="thumbnail"
+                style={{ backgroundImage: `url(${generateThumbnail(show.title, show.meta)})`, backgroundSize: "cover" }}
+              >
                 {show.mux_playback_id ? "▶ WATCH NOW" : "⚙ PROCESSING"}
               </div>
               <div className="card-info">
